@@ -692,8 +692,8 @@
     <div class="scene">
         <div class="card-container" id="cardContainer">
             <div class="card">
-                <div class="notification-dot"></div>
-                <div class="status-indicator"></div>
+                <div class="notification-dot" tabindex="0" role="button" aria-label="View Notifications"></div>
+                <div class="status-indicator" role="status" aria-label="User Status"></div>
                 
                 <div class="particles">
                     <div class="particle"></div>
@@ -705,7 +705,7 @@
                 </div>
                 
                 <div class="card-header">
-                    <div class="avatar" id="avatar">JS</div>
+                    <div class="avatar" id="avatar" tabindex="0" role="button" aria-label="User Avatar">JS</div>
                     <div class="user-info">
                         <h3>Jane Smith</h3>
                         <p>Senior Developer</p>
@@ -713,26 +713,26 @@
                 </div>
 
                 <div class="skill-badges">
-                    <div class="skill-badge">JavaScript</div>
-                    <div class="skill-badge">React</div>
-                    <div class="skill-badge">Node.js</div>
-                    <div class="skill-badge">TypeScript</div>
+                    <div class="skill-badge" tabindex="0" role="button" aria-label="Skill: JavaScript">JavaScript</div>
+                    <div class="skill-badge" tabindex="0" role="button" aria-label="Skill: React">React</div>
+                    <div class="skill-badge" tabindex="0" role="button" aria-label="Skill: Node.js">Node.js</div>
+                    <div class="skill-badge" tabindex="0" role="button" aria-label="Skill: TypeScript">TypeScript</div>
                 </div>
 
                 <div class="stats-grid">
-                    <div class="stat-item" data-stat="projects">
+                    <div class="stat-item" data-stat="projects" tabindex="0" role="button" aria-label="View Projects Statistics">
                         <div class="stat-number">24</div>
                         <div class="stat-label">Projects</div>
                     </div>
-                    <div class="stat-item" data-stat="followers">
+                    <div class="stat-item" data-stat="followers" tabindex="0" role="button" aria-label="View Followers Statistics">
                         <div class="stat-number">1.2K</div>
                         <div class="stat-label">Followers</div>
                     </div>
-                    <div class="stat-item" data-stat="success">
+                    <div class="stat-item" data-stat="success" tabindex="0" role="button" aria-label="View Success Rate Statistics">
                         <div class="stat-number">98%</div>
                         <div class="stat-label">Success Rate</div>
                     </div>
-                    <div class="stat-item" data-stat="rating">
+                    <div class="stat-item" data-stat="rating" tabindex="0" role="button" aria-label="View Rating Statistics">
                         <div class="stat-number">4.9</div>
                         <div class="stat-label">Rating</div>
                     </div>
@@ -740,10 +740,10 @@
 
                 <div class="progress-section">
                     <div class="progress-label">
-                        <span>Completion Progress</span>
+                        <span id="progressLabel">Completion Progress</span>
                         <span id="progressValue">78%</span>
                     </div>
-                    <div class="progress-bar">
+                    <div class="progress-bar" role="progressbar" aria-valuenow="78" aria-valuemin="0" aria-valuemax="100" aria-labelledby="progressLabel">
                         <div class="progress-fill" id="progressFill"></div>
                     </div>
                 </div>
@@ -753,7 +753,7 @@
                     <button class="btn btn-secondary" onclick="handleSecondaryAction()">Message</button>
                 </div>
 
-                <div class="sound-wave" onclick="toggleSoundWave()">
+                <div class="sound-wave" onclick="toggleSoundWave()" tabindex="0" role="button" aria-label="Toggle Sound Wave Visualizer">
                     <div class="wave-bar"></div>
                     <div class="wave-bar"></div>
                     <div class="wave-bar"></div>
@@ -772,91 +772,99 @@
         // Enhanced mouse tracking for 3D effect
         const cardContainer = document.getElementById('cardContainer');
         const card = document.querySelector('.card');
-        
-        cardContainer.addEventListener('mousemove', (e) => {
-            const rect = cardContainer.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            mouseX = x;
-            mouseY = y;
-            
-            const centerX = rect.width / 2;
-            const centerY = rect.height / 2;
-            
-            const rotateX = (y - centerY) / 8;
-            const rotateY = (centerX - x) / 8;
-            
-            cardContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(50px) scale(1.05)`;
-            
-            // Add dynamic lighting effect
-            const lightX = (x / rect.width) * 100;
-            const lightY = (y / rect.height) * 100;
-            
-            card.style.background = `
-                radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
-                linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)
-            `;
-        });
-        
-        cardContainer.addEventListener('mouseleave', () => {
-            cardContainer.style.transform = 'rotateX(0) rotateY(0) translateZ(0) scale(1)';
-            card.style.background = `
-                linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%),
-                radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%)
-            `;
-        });
 
-        // Card click animation
-        cardContainer.addEventListener('click', (e) => {
-            if (e.target.closest('.btn') || e.target.closest('.sound-wave') || e.target.closest('.avatar')) return;
-            
-            cardContainer.classList.add('clicked');
-            setTimeout(() => cardContainer.classList.remove('clicked'), 600);
-            
-            // Create ripple effect
-            createRipple(e.clientX, e.clientY);
-        });
+        if (cardContainer && card) {
+            cardContainer.addEventListener('mousemove', (e) => {
+                const rect = cardContainer.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
 
-        // Avatar interaction (REPLACE the incomplete avatar handler)
+                mouseX = x;
+                mouseY = y;
+
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+
+                const rotateX = (y - centerY) / 8;
+                const rotateY = (centerX - x) / 8;
+
+                cardContainer.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(50px) scale(1.05)`;
+
+                // Add dynamic lighting effect
+                const lightX = (x / rect.width) * 100;
+                const lightY = (y / rect.height) * 100;
+
+                card.style.background = `
+                    radial-gradient(circle at ${lightX}% ${lightY}%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+                    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%)
+                `;
+            });
+
+            cardContainer.addEventListener('mouseleave', () => {
+                cardContainer.style.transform = 'rotateX(0) rotateY(0) translateZ(0) scale(1)';
+                card.style.background = `
+                    linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%),
+                    radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%)
+                `;
+            });
+
+            // Card click animation
+            cardContainer.addEventListener('click', (e) => {
+                if (e.target.closest('.btn') || e.target.closest('.sound-wave') || e.target.closest('.avatar')) return;
+
+                cardContainer.classList.add('clicked');
+                setTimeout(() => cardContainer.classList.remove('clicked'), 600);
+
+                // Create ripple effect
+                createRipple(e.clientX, e.clientY);
+            });
+        }
+
+        // Avatar interaction
         const avatar = document.getElementById('avatar');
-        avatar.addEventListener('click', (e) => {
-            e.stopPropagation();
-            avatar.style.animation = 'none';
-            setTimeout(() => {
-                avatar.style.animation = '';
-            }, 100);
-            
-            // Change avatar content randomly
-            const avatars = ['JS', '🚀', '💫', '⭐', '🔥', '💎', '🌟', '⚡'];
-            const currentIndex = avatars.indexOf(avatar.textContent);
-            const newIndex = (currentIndex + 1) % avatars.length;
-            avatar.textContent = avatars[newIndex];
-            
-            // Add click effect
-            avatar.style.transform = 'scale(1.2) translateZ(20px)';
-            setTimeout(() => {
-                avatar.style.transform = '';
-            }, 200);
-        });
-
-        // Stat items interaction
-        const statItems = document.querySelectorAll('.stat-item');
-        statItems.forEach(item => {
-            item.addEventListener('click', (e) => {
+        if (avatar) {
+            avatar.addEventListener('click', (e) => {
                 e.stopPropagation();
-                
+                avatar.style.animation = 'none';
+                setTimeout(() => {
+                    avatar.style.animation = '';
+                }, 100);
+
+                // Change avatar content randomly
+                const avatars = ['JS', '🚀', '💫', '⭐', '🔥', '💎', '🌟', '⚡'];
+                const currentIndex = avatars.indexOf(avatar.textContent);
+                const newIndex = (currentIndex + 1) % avatars.length;
+                avatar.textContent = avatars[newIndex];
+
+                // Add click effect
+                avatar.style.transform = 'scale(1.2) translateZ(20px)';
+                setTimeout(() => {
+                    avatar.style.transform = '';
+                }, 200);
+            });
+        }
+
+        // Stat items interaction - Event Delegation
+        const statsGrid = document.querySelector('.stats-grid');
+        if (statsGrid) {
+            statsGrid.addEventListener('click', (e) => {
+                const item = e.target.closest('.stat-item');
+                if (!item) return;
+
+                e.stopPropagation();
+
                 // Add click animation
                 item.style.transform = 'translateY(-12px) translateZ(25px) rotateX(15deg) scale(1.05)';
                 setTimeout(() => {
                     item.style.transform = '';
                 }, 300);
-                
+
                 // Update stat with animation
                 const statNumber = item.querySelector('.stat-number');
+                if (!statNumber) return;
                 const currentValue = statNumber.textContent;
                 statNumber.style.transform = 'scale(1.3) rotateY(360deg)';
-                
+
                 setTimeout(() => {
                     // Increment the stat value
                     const statType = item.dataset.stat;
@@ -879,26 +887,29 @@
                     statNumber.style.transform = '';
                 }, 150);
             });
-        });
+        }
 
-        // Skill badges interaction
-        const skillBadges = document.querySelectorAll('.skill-badge');
-        skillBadges.forEach(badge => {
-            badge.addEventListener('click', (e) => {
+        // Skill badges interaction - Event Delegation
+        const skillBadgesContainer = document.querySelector('.skill-badges');
+        if (skillBadgesContainer) {
+            skillBadgesContainer.addEventListener('click', (e) => {
+                const badge = e.target.closest('.skill-badge');
+                if (!badge) return;
+
                 e.stopPropagation();
-                
+
                 // Add active state
                 badge.style.background = 'linear-gradient(135deg, rgba(78, 205, 196, 0.4), rgba(102, 126, 234, 0.4))';
                 badge.style.transform = 'translateY(-4px) scale(1.1)';
                 badge.style.boxShadow = '0 12px 24px rgba(78, 205, 196, 0.4)';
-                
+
                 setTimeout(() => {
                     badge.style.background = '';
                     badge.style.transform = '';
                     badge.style.boxShadow = '';
                 }, 500);
             });
-        });
+        }
 
         // Create ripple effect function
         function createRipple(x, y) {
@@ -994,7 +1005,10 @@
         // Sound wave toggle function
         function toggleSoundWave() {
             const soundWave = document.querySelector('.sound-wave');
+            if (!soundWave) return;
+
             const waveBars = soundWave.querySelectorAll('.wave-bar');
+            if (!waveBars || waveBars.length === 0) return;
             
             isWaveActive = !isWaveActive;
             
@@ -1070,29 +1084,41 @@
         // Progress bar animation enhancement
         const progressFill = document.getElementById('progressFill');
         const progressValue = document.getElementById('progressValue');
-        
-        // Animate progress on card hover
-        cardContainer.addEventListener('mouseenter', () => {
-            let currentProgress = 78;
-            const targetProgress = Math.min(currentProgress + Math.floor(Math.random() * 10), 100);
-            
-            const animateProgress = () => {
-                if (currentProgress < targetProgress) {
-                    currentProgress++;
-                    progressFill.style.width = currentProgress + '%';
-                    progressValue.textContent = currentProgress + '%';
-                    requestAnimationFrame(animateProgress);
+
+        if (cardContainer && progressFill && progressValue) {
+            // Animate progress on card hover
+            cardContainer.addEventListener('mouseenter', () => {
+                let currentProgress = 78; // Assuming initial progress is 78%
+                // Try to parse current progress from element, fallback to 78
+                if (progressValue.textContent) {
+                    const parsedProgress = parseInt(progressValue.textContent);
+                    if (!isNaN(parsedProgress)) {
+                        currentProgress = parsedProgress;
+                    }
                 }
-            };
-            
-            setTimeout(animateProgress, 500);
-        });
+
+                const targetProgress = Math.min(currentProgress + Math.floor(Math.random() * 10), 100);
+
+                const animateProgress = () => {
+                    if (currentProgress < targetProgress) {
+                        currentProgress++;
+                        progressFill.style.width = currentProgress + '%';
+                        progressValue.textContent = currentProgress + '%';
+                        requestAnimationFrame(animateProgress);
+                    }
+                };
+                setTimeout(animateProgress, 500);
+            });
+        }
 
         // Keyboard navigation support
         document.addEventListener('keydown', (e) => {
             if (e.key === 'Enter' || e.key === ' ') {
                 const focusedElement = document.activeElement;
-                if (focusedElement.classList.contains('btn')) {
+                if (focusedElement && focusedElement.matches('button, [role="button"]')) {
+                    if (e.key === ' ') {
+                        e.preventDefault(); // Prevent scrolling when space is pressed
+                    }
                     focusedElement.click();
                 }
             }
@@ -1118,7 +1144,7 @@
         }
 
         // Enhanced mobile touch support
-        if ('ontouchstart' in window) {
+        if ('ontouchstart' in window && cardContainer) {
             cardContainer.addEventListener('touchstart', (e) => {
                 cardContainer.style.transform = 'scale(1.02)';
             });
